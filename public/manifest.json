@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "RouteSnap",
+  "version": "1.0.0",
+  "description": "Download cycling routes as GPX files with a single click",
+  "permissions": ["storage", "downloads", "tabs"],
+  "host_permissions": ["https://*.bikemap.net/*"],
+  "action": {
+    "default_title": "RouteSnap — Download route as GPX",
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/index.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.bikemap.net/r/*"],
+      "js": ["adapters/interceptor-base.js", "adapters/bikemap/interceptor.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://*.bikemap.net/r/*"],
+      "js": ["content/index.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

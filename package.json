@@ -1,0 +1,29 @@
+{
+  "name": "routesnap",
+  "version": "1.0.0",
+  "description": "Chrome extension to download cycling routes as GPX files",
+  "author": "sbeleuz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbeleuz/routesnap"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "dev": "npm run build && echo 'Extension built! Load dist/ folder in chrome://extensions/ with Developer mode enabled'",
+    "watch": "echo 'Watch mode: Manually run \"npm run build\" after changes, then reload in Chrome'",
+    "lint": "echo 'Add ESLint or similar for linting'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "routesnap",
+    "gpx",
+    "route",
+    "gps",
+    "cycling"
+  ],
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

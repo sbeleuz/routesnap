@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RouteSnap</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>RouteSnap</h1>
+                <p>Download routes as GPX files</p>
+            </div>
+
+            <div class="content">
+                <!-- Shown when not on any supported route page.
+                     #site-hints is populated dynamically from sites.js
+                     so no site-specific text lives in this file. -->
+                <div id="state-not-route" class="state" hidden>
+                    <div id="site-hints"></div>
+                </div>
+
+                <!-- Shown when on a supported route page -->
+                <div id="state-route" class="state" hidden>
+                    <div class="route-info">
+                        <div class="route-info-row">
+                            <span class="route-info-label">Route</span>
+                            <span id="route-title" class="route-info-value"
+                                >—</span
+                            >
+                        </div>
+                        <div class="route-info-row">
+                            <span class="route-info-label">ID</span>
+                            <span
+                                id="route-id"
+                                class="route-info-value route-id"
+                                >—</span
+                            >
+                        </div>
+                    </div>
+
+                    <div id="data-status" class="data-status">
+                        <span id="data-status-text"></span>
+                    </div>
+
+                    <button id="download-btn" class="btn btn-primary" disabled>
+                        ⬇ Download GPX
+                    </button>
+
+                    <div
+                        id="download-result"
+                        class="download-result"
+                        hidden
+                    ></div>
+
+                    <button id="refresh-btn" class="btn btn-secondary">
+                        🔄 Reload page
+                    </button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="version"></span>
+            </div>
+        </div>
+
+        <script type="module" src="index.js"></script>
+    </body>
+</html>
