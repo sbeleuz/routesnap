@@ -22,9 +22,6 @@
  *                            Extracts a route ID string from the tab URL.
  *                            Used as a display label and filename fallback.
  *
- *  hintText       {string}   Short instruction shown in the "not a route
- *                            page" state, e.g. "Open a Bikemap route page…"
- *
  *  hintUrl        {string}   Example URL pattern shown below the hint text,
  *                            e.g. "web.bikemap.net/r/…"
  */
@@ -34,7 +31,12 @@ export const SITES = [
     id: "bikemap",
     routePattern: /web\.bikemap\.net\/r\/\d+/,
     extractRouteId: (url) => url.match(/\/r\/(\d+)/)?.[1] ?? "",
-    hintText: "Open a Bikemap route page to download a GPX file.",
     hintUrl: "web.bikemap.net/r/…",
+  },
+  {
+    id: "strava",
+    routePattern: /strava\.com\/segments\/\d+/,
+    extractRouteId: (url) => url.match(/\/segments\/(\d+)/)?.[1] ?? "",
+    hintUrl: "strava.com/segments/…",
   },
 ];
