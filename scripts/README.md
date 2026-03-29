@@ -1,18 +1,18 @@
-# Bikemap to GPX Converter
+# RouteSnap Scripts
 
-A Python script that extracts Bikemap routes and converts them to GPX files.
+Standalone Python scripts that extract routes/segments from cycling websites and convert them to GPX files using Playwright.
 
-## Description
+---
 
-This script automates the process of downloading route data from Bikemap.net and converting it into GPX format, which can be imported into most GPS devices and mapping applications. It uses Playwright to fetch the route geometry and metadata from Bikemap's API.
-
-## Requirements
+# Requirements
 
 - Python 3.7+
 - Playwright
-- A valid Bikemap route ID
+- A valid route/segment id
 
-## Installation
+---
+
+# Installation
 
 1. Create and activate a virtual environment:
 
@@ -32,37 +32,56 @@ This script automates the process of downloading route data from Bikemap.net and
    playwright install chromium
    ```
 
-## Usage
+---
 
-Convert a Bikemap route to GPX by providing a route ID:
+# Bikemap
 
-```bash
-python bikemap_to_gpx.py 14289695
+Convert a Bikemap route into a GPX track file.
+
+## How it works
+
+Bikemap's route page triggers two unauthenticated AJAX calls that together
+contain all the information needed to build a GPX file:
+
+```
+GET /api/v6/routes/<id>/geometry/extended → coordinate geometry
+GET /api/v6/routes/<id>/ → route metadata (title, distance, ascent)
 ```
 
-This will create a GPX file named after the route title (or the route ID if title is unavailable).
+This script intercepts those responses with Playwright and writes a GPX 1.1
+file named after the route title.
 
-## Finding Your Route ID
+## Usage
 
-You can find the route ID in the Bikemap URL:
+```bash
+.venv/bin/python bikemap_to_gpx.py 14289695
+.venv/bin/python bikemap_to_gpx.py 14289695 -o my_route.gpx
+```
 
-- Navigate to your desired route on bikemap.net
-- The URL will look like: `https://web.bikemap.net/r/14289695`
-- The number at the end (`14289695`) is your route ID
+# Strava Segments
 
-## Output
+Convert a public Strava segment page into a GPX track file.
 
-The script generates a GPX file containing:
+### How it works
 
-- Track segments with all waypoints from the route
-- Latitude and longitude for each point
-- Elevation data (if available)
-- Route name
+Strava's segment page triggers a single unauthenticated AJAX call to:
 
-## How It Works
+```
+GET /stream/segments/<id>?streams[]=latlng&streams[]=distance&streams[]=altitude
+```
 
-1. **Fetch Route Data**: Uses Playwright to load the Bikemap route page and intercept API responses
-2. **Extract Geometry**: Captures the route geometry data containing all waypoints
-3. **Extract Metadata**: Captures route information including title, distance, and ascent
-4. **Build GPX**: Constructs a valid GPX 1.1 XML file with the collected data
-5. **Save File**: Writes the GPX content to the specified output file
+That response contains three parallel arrays:
+
+- latlng – [[lat, lon], …] one pair per sample point
+- altitude – [metres, …] elevation at each sample
+- distance – [metres, …] cumulative distance at each sample
+
+This script intercepts that response with Playwright, pulls the segment
+title from the page <title> element, and writes a GPX 1.1 file.
+
+### Usage
+
+```bash
+.venv/bin/python strava_segment_to_gpx.py 39414139
+.venv/bin/python strava_segment_to_gpx.py 39414139 -o my_segment.gpx
+```
