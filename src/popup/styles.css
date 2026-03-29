@@ -78,7 +78,11 @@ body {
     color: #aaa;
     text-align: center;
     font-family: monospace;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
+}
+
+#site-hints {
+    margin-top: 8px;
 }
 
 /* ---------------------------------------------------------------------------

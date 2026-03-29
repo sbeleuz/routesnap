@@ -20,6 +20,7 @@
 import { buildGpxDocument } from "./gpx.js";
 import { assertAdapterContract } from "../adapters/adapter-interface.js";
 import * as bikemapAdapter from "../adapters/bikemap/builder.js";
+import * as stravaAdapter from "../adapters/strava/builder.js";
 
 // ---------------------------------------------------------------------------
 // Adapter registry
@@ -30,6 +31,7 @@ import * as bikemapAdapter from "../adapters/bikemap/builder.js";
 
 const ADAPTERS = {
   bikemap: assertAdapterContract("bikemap", bikemapAdapter),
+  strava: assertAdapterContract("strava", stravaAdapter),
 };
 
 // ---------------------------------------------------------------------------

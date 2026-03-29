@@ -15,8 +15,8 @@
 
 import { SITES } from "./sites.js";
 
-const POLL_INTERVAL_MS = 600;
-const POLL_MAX_ATTEMPTS = 12; // ~7 seconds total
+const POLL_INTERVAL_MS = 1000;
+const POLL_MAX_ATTEMPTS = 5; // 5 seconds total
 
 // ---------------------------------------------------------------------------
 // DOM refs — resolved once after DOMContentLoaded
@@ -75,15 +75,9 @@ function populateSiteHints() {
   elements.siteHints.innerHTML = "";
 
   SITES.forEach((site) => {
-    const hint = document.createElement("p");
-    hint.className = "hint";
-    hint.textContent = site.hintText;
-
     const hintUrl = document.createElement("p");
     hintUrl.className = "hint-url";
     hintUrl.textContent = site.hintUrl;
-
-    elements.siteHints.appendChild(hint);
     elements.siteHints.appendChild(hintUrl);
   });
 }
@@ -110,10 +104,10 @@ async function pollForRouteStatus(tabId, routeId) {
 
     if (status.hasData) return status;
 
-    // Update the counter so the user can see progress.
+    // Update the seconds-remaining counter so the user can see progress.
     const remaining = POLL_MAX_ATTEMPTS - attempt - 1;
     if (remaining > 0) {
-      elements.dataStatusText.textContent = `⏳ Waiting for route data… (${remaining})`;
+      elements.dataStatusText.textContent = `⏳ Waiting for route data… (${remaining}s)`;
       await sleep(POLL_INTERVAL_MS);
     }
   }
@@ -150,17 +144,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   setRouteInfo(routeId, null);
   setDataStatus(false);
 
-  // Poll until data is captured or we time out.
-  const status = await pollForRouteStatus(tab.id, routeId);
-
-  setDataStatus(status.hasData);
-
-  if (status.hasData) {
-    setRouteInfo(routeId, status.title);
-  } else {
-    elements.dataStatusText.textContent =
-      "❌ Route data not captured — try reloading the page.";
-  }
+  // ---------------------------------------------------------------------------
+  // Refresh button — wired up before polling so it works while waiting.
+  // ---------------------------------------------------------------------------
+  elements.refreshBtn.addEventListener("click", () => {
+    chrome.tabs.reload(tab.id);
+    window.close();
+  });
 
   // ---------------------------------------------------------------------------
   // Download button
@@ -193,11 +183,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // ---------------------------------------------------------------------------
-  // Refresh button
-  // ---------------------------------------------------------------------------
-  elements.refreshBtn.addEventListener("click", () => {
-    chrome.tabs.reload(tab.id);
-    window.close();
-  });
+  // Poll until data is captured or we time out.
+  const status = await pollForRouteStatus(tab.id, routeId);
+
+  setDataStatus(status.hasData);
+
+  if (status.hasData) {
+    setRouteInfo(routeId, status.title);
+  } else {
+    elements.dataStatusText.textContent =
+      "❌ Route data not captured — try reloading the page.";
+  }
 });
